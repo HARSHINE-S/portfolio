@@ -23,5 +23,5 @@
 - Features: Smooth scrolling, form validation, interactive project cards
 - Performance: Lightweight, no heavy frameworks
 
-
-
+## 🌐 Project Demo  
+👉 [View My Portfolio Live]https://harshine-s.github.io/portfolio/  
