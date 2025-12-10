@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Portfolio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    :root {
+      --accent: #61dafb;
+      --accent-dark: #21a1f1;
+      --bg: #121212;
+      --card: #1f1f1f;
+      --muted: #999;
+    }
+    body { background: var(--bg); color: #eee; line-height: 1.6; scroll-behavior: smooth; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover, a:focus { text-decoration: underline; }
+    img { max-width: 100%; display: block; }
+
+    header {
+      background: #1f1f1f;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0;
+      /* stronger header glow */
+      text-shadow: 0 0 10px rgba(97,218,251,0.9), 0 0 24px rgba(33,161,241,0.6);
+    }
+    nav a { margin-left: 1.5rem; font-weight: 600; font-size: 1rem; transition: color 0.3s ease; }
+    nav a:hover, nav a:focus { color: var(--accent-dark); }
+
+    .hero {
+      /* make hero a centered card with controlled width */
+      max-width: 1000px;        /* reduce overall box width */
+      width: calc(100% - 4rem);
+      margin: 3rem auto;        /* center on page with vertical spacing */
+      padding: 3.5rem 2rem;     /* inner spacing */
+      border-radius: 12px;      /* rounded corners */
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 2px 30px rgba(33,161,241,0.05);
+    }
+    /* keep hero-content constrained so text doesn't span too wide */
+    .hero-content { max-width: 760px; width: 100%; }
+    .hero h2 {
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 900;
+      color: var(--accent);
+      text-shadow:
+        0 0 18px rgba(97,218,251,0.95),
+        0 0 40px rgba(97,218,251,0.7),
+        0 6px 28px rgba(0,0,0,0.6);
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    .hero-subtitle { font-size: 1.4rem; margin-bottom: 1rem; font-weight: 600; color: var(--accent-dark); }
+    .hero-description { font-size: 1.05rem; margin-bottom: 2rem; color: #c0e8ff; line-height: 1.8; }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent);
+      color: #121212;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow:
+        0 8px 28px rgba(97,218,251,0.30),
+        0 2px 8px rgba(33,161,241,0.18);
+      transition: transform 0.15s ease, box-shadow 0.25s ease;
+      animation: btnGlow 4s ease-in-out infinite;
+    }
+    .btn-primary:hover, .btn-primary:focus {
+      background: var(--accent-dark);
+      box-shadow: 0 8px 30px rgba(33,161,241,0.25);
+      transform: translateY(-2px);
+      outline: none;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      padding: 0.75rem 2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+      line-height: 1;
+    }
+    .btn-secondary:hover, .btn-secondary:focus {
+      background: var(--accent);
+      color: #121212;
+      box-shadow: 0 8px 20px rgba(97,218,251,0.2);
+      outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .hero h2 { font-size: 2.4rem; }
+      .hero-subtitle { font-size: 1.1rem; }
+      .hero-buttons { flex-direction: column; }
+      .btn-primary, .btn-secondary { width: 100%; }
+    }
+
+    section { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; }
+    section h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      display: inline-block;
+      padding-bottom: 0.3rem;
+    }
+
+    #about p { font-size: 1.05rem; max-width: 700px; color: #ddd; margin-bottom: 1rem; }
+
+    /* Skills */
+    #skills { margin-top: 1rem; }
+    .skill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.75rem; align-items: start; }
+    .skill-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+      border: 1px solid rgba(255,255,255,0.03);
+      padding: 1rem;
+      border-radius: 12px;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      min-height: 68px;
+    }
+    .skill-card:focus, .skill-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(33,161,241,0.12); outline: none; }
+    .skill-icon { width: 48px; height: 48px; border-radius: 10px; display: inline-grid; place-items: center; background: linear-gradient(135deg,#203a43,#2c5364); color: var(--accent); font-size: 1.25rem; flex-shrink: 0; }
+    .skill-meta { flex: 1; min-width: 0; }
+    .skill-top { display:flex; justify-content:flex-start; align-items:center; gap:0.75rem; margin-bottom:0.25rem; }
+    .skill-name { font-weight:700; color:#cfefff; font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .skill-bar { width:100%; height:8px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; margin-top:0.5rem; }
+    .skill-fill {
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg,var(--accent),var(--accent-dark));
+      border-radius:999px;
+      box-shadow:0 6px 18px rgba(33,161,241,0.12);
+      transition: width 1s cubic-bezier(.2,.9,.2,1);
+    }
+    .skill-sub { font-size: 0.85rem; color: #9fd8ff; margin-top: 0.25rem; opacity: 0.95; }
+    .skill-card[style] .skill-fill { width: calc(var(--level, 0%) ); }
+
+    @media (max-width:520px) {
+      .skill-card { gap:0.5rem; padding:0.75rem; min-height: auto; }
+      .skill-icon { width:40px; height:40px; font-size:1rem; }
+    }
+
+    #projects {
+      margin-top: 1rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      transition: transform 0.25s ease;
+    }
+    #projects:hover { transform: translateY(-4px); }
+    #projects > div { display: flex; gap: 1.5rem; min-width: fit-content; padding-bottom: 0.5rem; }
+    .project-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow:
+        0 10px 30px rgba(16,30,36,0.6),
+        0 0 30px rgba(97,218,251,0.04);
+      transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s ease, border-color 0.28s ease;
+      width: 320px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid transparent;
+      cursor: pointer; /* show clickable */
+    }
+
+    /* keep hover look when a card is clicked (persistent) */
+    .project-card.clicked,
+    .project-card.clicked:hover,
+    .project-card:focus-within.clicked {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(33,161,241,0.12);
+      border-color: rgba(97,218,251,0.08);
+    }
+    /* visible focus ring if selected by keyboard */
+    .project-card.clicked:focus {
+      outline: 3px solid rgba(97,218,251,0.22);
+      outline-offset: 4px;
+    }
+
+    .project-image {
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #203a43;
+      height: 180px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .project-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .project-image::after {
+      /* faint overlay glow inside project image for emphasis */
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: 8px;
+      box-shadow: 0 0 40px rgba(97,218,251,0.06) inset;
+    }
+    .project-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); }
+    .project-desc { font-size: 0.98rem; color: #ccc; flex-grow: 1; margin-bottom: 1rem; }
+    .tech-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .tech-tag { background: #303d52; color: var(--accent); padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.88rem; font-weight: 600; }
+
+    /* Contact */
+    #contact form { max-width: 600px; margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+    #contact label { font-weight: 600; color: var(--accent); }
+    #contact input, #contact textarea {
+      padding: 0.7rem 1rem; border-radius: 8px; border: none; font-size: 1rem; resize: vertical; background: #203a43; color: #eee;
+      box-shadow: inset 0 0 5px #000000aa; transition: box-shadow 0.3s ease;
+    }
+    #contact input:focus, #contact textarea:focus { outline: none; box-shadow: 0 0 8px var(--accent); background: #2c5364; }
+    #contact button {
+      width: 160px; align-self: flex-start; background: var(--accent); color: #121212; border: none; padding: 0.75rem 1.5rem;
+      font-weight: 700; font-size: 1.05rem; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(97,218,251,0.18);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #contact button:hover, #contact button:focus { background: var(--accent-dark); box-shadow: 0 8px 20px rgba(33,161,241,0.16); outline: none; }
+    .contact-links { margin-top: 1.5rem; display: flex; gap: 1.5rem; font-size: 1rem; align-items: center; }
+    .contact-links a { color: var(--accent); font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.3s ease; }
+    .contact-links a:hover, .contact-links a:focus { border-color: var(--accent); outline: none; }
+
+    /* Footer - simple & professional */
+    footer {
+      background: transparent;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding: 1.25rem 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.2px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .footer-links a {
+      color: var(--accent);
+      font-weight: 600;
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background 0.18s ease, color 0.18s ease;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover,
+    .footer-links a:focus {
+      background: rgba(97,218,251,0.06);
+      color: var(--accent-dark);
+      outline: none;
+    }
+
+    .footer-copy {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 600px) {
+      .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+      .footer-links { order: 2; justify-content: center; width: 100%; }
+      .footer-copy { order: 3; margin-top: 8px; }
+      .footer-brand { order: 1; margin-bottom: 6px; }
+    }
+
+    /* Utility */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    /* Section hover/card effects for About, Projects and Contact */
+    #about,
+    #contact {
+      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.06));
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    }
+    #about:hover, #about:focus-within,
+    #contact:hover, #contact:focus-within {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 40px rgba(33,161,241,0.10);
+      background: linear-gradient(180deg, rgba(97,218,251,0.02), rgba(0,0,0,0.08));
+    }
+
+    /* Projects section container subtle lift */
+    #projects {
+      transition: transform 0.25s ease;
+    }
+    #projects:hover { transform: translateY(-4px); }
+
+    /* Stronger project card hover (scale + shadow + subtle border) */
+    .project-card {
+      transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s ease, border-color 0.28s ease;
+      border: 1px solid transparent;
+    }
+    .project-card:hover,
+    .project-card:focus-within {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(33,161,241,0.12);
+      border-color: rgba(97,218,251,0.08);
+    }
+
+    /* Accessible keyboard focus */
+    .project-card:focus {
+      outline: 3px solid rgba(97,218,251,0.18);
+      outline-offset: 4px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 520px) {
+      #about, #contact { padding: 1rem; border-radius: 10px; }
+      .project-card:hover, .project-card:focus-within { transform: translateY(-6px) scale(1.01); }
+    }
+
+    /* Pulse/keyframes */
+    @keyframes glowPulse {
+      0% {
+        filter: drop-shadow(0 0 10px rgba(97,218,251,0.6));
+        text-shadow: 0 0 14px rgba(97,218,251,0.8), 0 0 36px rgba(33,161,241,0.5);
+      }
+      50% {
+        filter: drop-shadow(0 0 28px rgba(97,218,251,0.95));
+        text-shadow: 0 0 24px rgba(97,218,251,1), 0 0 56px rgba(33,161,241,0.8);
+      }
+      100% {
+        filter: drop-shadow(0 0 10px rgba(97,218,251,0.6));
+        text-shadow: 0 0 14px rgba(97,218,251,0.8), 0 0 36px rgba(33,161,241,0.5);
+      }
+    }
+
+    @keyframes btnGlow {
+      0% { box-shadow: 0 8px 28px rgba(97,218,251,0.25), 0 2px 8px rgba(33,161,241,0.12); transform: translateY(0); }
+      50% { box-shadow: 0 18px 48px rgba(97,218,251,0.40), 0 4px 12px rgba(33,161,241,0.2); transform: translateY(-2px); }
+      100% { box-shadow: 0 8px 28px rgba(97,218,251,0.25), 0 2px 8px rgba(33,161,241,0.12); transform: translateY(0); }
+    }
+
+    /* Always-on glow + gentle pulse for About, Skills and Projects sections */
+    #about,
+    #skills,
+    #projects {
+      position: relative;
+      border-radius: 12px;
+      /* soft ambient glow */
+      box-shadow: 0 8px 40px rgba(97,218,251,0.06), 0 2px 10px rgba(33,161,241,0.03);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      animation: sectionGlow 4s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    /* stronger visible glow on the section headings */
+    #about h3,
+    #skills h3,
+    #projects h3 {
+      text-shadow: 0 0 10px rgba(97,218,251,0.9), 0 0 26px rgba(33,161,241,0.45);
+    }
+
+    /* Skill cards ambient glow */
+    .skill-card {
+      box-shadow:
+        0 10px 30px rgba(16,30,36,0.6),
+        0 0 30px rgba(97,218,251,0.05);
+      animation: cardGlow 3.6s ease-in-out infinite;
+    }
+
+    /* make skill icon glow */
+    .skill-icon {
+      box-shadow: 0 6px 20px rgba(97,218,251,0.14), inset 0 2px 6px rgba(0,0,0,0.4);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    /* Project cards ambient glow (always visible) */
+    .project-card {
+      box-shadow:
+        0 18px 50px rgba(33,161,241,0.08),
+        0 0 40px rgba(97,218,251,0.04);
+      transform: translateZ(0);
+      animation: cardGlow 4s ease-in-out infinite;
+    }
+
+    /* subtle overlay glow inside project images */
+    .project-image::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      pointer-events: none;
+      background: radial-gradient(800px 200px at 50% 20%, rgba(97,218,251,0.06), transparent 30%);
+      mix-blend-mode: screen;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    /* stronger ambient for hero-adjacent sections (optional) */
+    .hero + section,
+    #about:hover, #skills:hover, #projects:hover {
+      box-shadow: 0 24px 70px rgba(33,161,241,0.10), 0 0 60px rgba(97,218,251,0.06);
+    }
+
+    /* Keyframes for gentle pulsing glow */
+    @keyframes sectionGlow {
+      0% { box-shadow: 0 8px 40px rgba(97,218,251,0.05), 0 2px 10px rgba(33,161,241,0.02); transform: translateY(0); }
+      50% { box-shadow: 0 22px 60px rgba(97,218,251,0.10), 0 6px 18px rgba(33,161,241,0.04); transform: translateY(-2px); }
+      100% { box-shadow: 0 8px 40px rgba(97,218,251,0.05), 0 2px 10px rgba(33,161,241,0.02); transform: translateY(0); }
+    }
+
+    @keyframes cardGlow {
+      0% { box-shadow: 0 12px 32px rgba(33,161,241,0.06), 0 0 24px rgba(97,218,251,0.03); transform: translateY(0); }
+      50% { box-shadow: 0 22px 50px rgba(33,161,241,0.10), 0 0 48px rgba(97,218,251,0.06); transform: translateY(-4px); }
+      100% { box-shadow: 0 12px 32px rgba(33,161,241,0.06), 0 0 24px rgba(97,218,251,0.03); transform: translateY(0); }
+    }
+
+    /* Accessibility: reduce motion respect */
+    @media (prefers-reduced-motion: reduce) {
+      #about, #skills, #projects, .skill-card, .project-card, .hero h2, .btn-primary {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Code Vault</h1>
+    <nav aria-label="Primary navigation">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-label="Introduction hero section">
+      <div class="hero-content">
+        <h2>Hi, I'm Harshine S</h2>
+        <p class="hero-subtitle">Computer Science Student & Aspiring Full-Stack Developer</p>
+        <p class="hero-description">I build responsive, interactive web applications with clean code and modern technologies. Passionate about solving problems and creating seamless user experiences.</p>
+        <div class="hero-buttons">
+          <button class="btn-primary" id="view-projects-btn" aria-controls="projects">View My Work</button>
+          <a href="#contact" class="btn-secondary">Get In Touch</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" tabindex="-1" aria-labelledby="about-heading">
+      <h3 id="about-heading">About Me</h3>
+      <p>As a Computer Science student, I have a deep passion for coding and web development. I enjoy turning complex problems into simple, beautiful, and functional solutions. Over the years, I've honed my skills in various programming languages and frameworks, always eager to learn and adapt to new technologies.</p>
+      <p>My journey began with a curiosity about how websites work, which led me to explore HTML, CSS, and JavaScript. This foundation has grown into a broader interest in full-stack development, including backend logic, databases, and user experience design. I'm particularly fond of creating interactive and responsive web applications that provide value to users.</p>
+      <p>Beyond coding, I love collaborating on team projects, participating in hackathons, and contributing to open-source initiatives. Problem-solving is not just a skill for me—it's a mindset. Whether it's debugging a tricky issue or optimizing code for performance, I thrive on challenges and continuous improvement.</p>
+      <p>When I'm not programming, you can find me exploring nature, reading tech blogs, or experimenting with new recipes in the kitchen. I'm excited about the future opportunities in tech and look forward to making an impact through innovative software solutions.</p>
+    </section>
+
+    <section id="skills" tabindex="-1" aria-labelledby="skills-heading">
+      <h3 id="skills-heading">Skills</h3>
+      <div class="skill-grid" role="list" aria-label="Technical skills">
+        <article class="skill-card" role="listitem" tabindex="0" aria-label="HTML skill" style="--level:90%;">
+          <div class="skill-icon" aria-hidden="true">⚙️</div>
+          <div class="skill-meta">
+            <div class="skill-top"><div class="skill-name">HTML</div></div>
+            <div class="skill-sub">Frontend • Markup</div>
+            <div class="skill-bar" aria-hidden="true"><div class="skill-fill"></div></div>
+          </div>
+        </article>
+
+        <article class="skill-card" role="listitem" tabindex="0" aria-label="CSS skill" style="--level:88%;">
+          <div class="skill-icon" aria-hidden="true">⚙️</div>
+          <div class="skill-meta">
+            <div class="skill-top"><div class="skill-name">CSS</div></div>
+            <div class="skill-sub">Styling • Design</div>
+            <div class="skill-bar" aria-hidden="true"><div class="skill-fill"></div></div>
+          </div>
+        </article>
+
+        <article class="skill-card" role="listitem" tabindex="0" aria-label="JavaScript skill" style="--level:82%;">
+          <div class="skill-icon" aria-hidden="true">⚙️</div>
+          <div class="skill-meta">
+            <div class="skill-top"><div class="skill-name">JavaScript</div></div>
+            <div class="skill-sub">Scripting • Interactivity</div>
+            <div class="skill-bar" aria-hidden="true"><div class="skill-fill"></div></div>
+          </div>
+        </article>
+
+        <article class="skill-card" role="listitem" tabindex="0" aria-label="Python skill" style="--level:75%;">
+          <div class="skill-icon" aria-hidden="true">⚙️</div>
+          <div class="skill-meta">
+            <div class="skill-top"><div class="skill-name">Python</div></div>
+            <div class="skill-sub">Programming • Automation</div>
+            <div class="skill-bar" aria-hidden="true"><div class="skill-fill"></div></div>
+          </div>
+        </article>
+
+        <article class="skill-card" role="listitem" tabindex="0" aria-label="Git skill" style="--level:88%;">
+          <div class="skill-icon" aria-hidden="true">⚙️</div>
+          <div class="skill-meta">
+            <div class="skill-top"><div class="skill-name">Git</div></div>
+            <div class="skill-sub">Version control • Collaboration</div>
+            <div class="skill-bar" aria-hidden="true"><div class="skill-fill"></div></div>
+          </div>
+        </article>
+
+        <article class="skill-card" role="listitem" tabindex="0" aria-label="SQL skill" style="--level:76%;">
+          <div class="skill-icon" aria-hidden="true">⚙️</div>
+          <div class="skill-meta">
+            <div class="skill-top"><div class="skill-name">SQL</div></div>
+            <div class="skill-sub">Relational databases • Queries</div>
+            <div class="skill-bar" aria-hidden="true"><div class="skill-fill"></div></div>
+          </div>
+        </article>
+
+        <article class="skill-card" role="listitem" tabindex="0" aria-label="MongoDB skill" style="--level:74%;">
+          <div class="skill-icon" aria-hidden="true">⚙️</div>
+          <div class="skill-meta">
+            <div class="skill-top"><div class="skill-name">MongoDB</div></div>
+            <div class="skill-sub">NoSQL • Flexible schemas</div>
+            <div class="skill-bar" aria-hidden="true"><div class="skill-fill"></div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="projects" tabindex="-1" aria-labelledby="projects-heading">
+      <h3 id="projects-heading">Projects</h3>
+      <div>
+        <article class="project-card" tabindex="0" aria-label="Portfolio Website project">
+          <div class="project-image">
+            <img src="portfolioimg.jpeg" alt="Portfolio screenshot" />
+          </div>
+          <h4 class="project-title">Portfolio Website</h4>
+          <div class="tech-list"><span class="tech-tag">HTML</span><span class="tech-tag">CSS</span><span class="tech-tag">JavaScript</span></div>
+          <p class="project-desc">This portfolio website is developed using vanilla HTML, CSS, and JavaScript to provide a lightweight, responsive, and accessible platform for showcasing personal skills, projects, and contact information. It avoids heavy frameworks, focusing instead on clarity, performance, and simplicity. Key features include animated skill bars, interactive project cards with hover effects, and a styled contact form that enhances user engagement. The design emphasizes modern aesthetics with gradient highlights, smooth transitions, and mobile responsiveness. By combining clean code with intuitive navigation, the site offers a professional digital presence that effectively communicates capabilities and achievements while remaining easy to maintain and extend.</p>
+        </article>
+
+        <article class="project-card" tabindex="0" aria-label="Simple alumni association platform project">
+          <div class="project-image"><img src="alumni.jpeg" alt="Alumni platform" /></div>
+          <h4 class="project-title">Simple alumni association platform</h4>
+          <div class="tech-list"><span class="tech-tag">HTML</span><span class="tech-tag">JavaScript</span></div>
+          <p class="project-desc">The Alumni Association Platform is a comprehensive web portal designed to bridge the gap between institutions, students, and graduates. It addresses alumni disconnection by offering a centralized ecosystem for networking and philanthropy.
+          The system provides secure role-based logins and a transparent Donation Module, enabling contributors to support specific causes such as Merit-Based Scholarships, Need-Based Aid, and Research Projects. Real-time progress bars gamify giving and ensure complete transparency.
+          The Event Management system supports hybrid participation, enabling offline reunions and global online webinars for mentorship. From expert talks to skill-building workshops, the platform encourages alumni to actively contribute to student development.</p>
+        </article>
+
+        <article class="project-card" tabindex="0" aria-label="Digital Farm Management Portal project">
+          <div class="project-image"><img src="digifarm.jpeg" alt="Digital farm portal" /></div>
+          <h4 class="project-title">Digital Farm Management Portal</h4>
+          <div class="tech-list"><span class="tech-tag">HTML</span><span class="tech-tag">JavaScript</span><span class="tech-tag">Python</span></div>
+          <p class="project-desc">Disease outbreaks in pig and poultry farms cause major economic losses due to poor biosecurity, where infections spread silently through visitors, vehicles, and daily operations. Farmers lack integrated, real-time tools for monitoring and prevention.
+          We propose an Integrated Digital Biosecurity and Farm Management Platform that unifies key farm operations. It includes QR-based visitor and vehicle control, biosecurity checklists, health and vaccination tracking with alerts, and inspection recording. Multilingual support, activity logs, search options, and emergency reporting ensure transparency and quick response.
+          This platform helps farmers prevent outbreaks, reduce losses, and improve livestock productivity, strengthening India’s livestock sector and supporting rural economic growth.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="contact" tabindex="-1" aria-labelledby="contact-heading">
+      <h3 id="contact-heading">Contact</h3>
+      <form id="contact-form" novalidate aria-describedby="form-instructions">
+        <p id="form-instructions" class="sr-only">All fields are required. Please fill out the form to send a message.</p>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required aria-required="true" aria-describedby="name-error" />
+        <span id="name-error" class="error-message" aria-live="polite" style="color:#f44336; font-size:0.9rem;"></span>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required aria-required="true" aria-describedby="email-error" />
+        <span id="email-error" class="error-message" aria-live="polite" style="color:#f44336; font-size:0.9rem;"></span>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" required aria-required="true" aria-describedby="message-error"></textarea>
+        <span id="message-error" class="error-message" aria-live="polite" style="color:#f44336; font-size:0.9rem;"></span>
+
+        <button type="submit">Send</button>
+      </form>
+
+      <div class="contact-links" aria-label="Social media links">
+        <a href="https://www.linkedin.com/in/harshine-s-5b333132b" target="_blank" rel="noopener" aria-label="LinkedIn profile">LinkedIn</a>
+        <a href="https://github.com/HARSHINE-S" target="_blank" rel="noopener" aria-label="GitHub profile">GitHub</a>
+        <a href="mailto:harshinearsh27@gmail.com" aria-label="Send email">Email</a>
+      </div>
+    </section>
+  </main>
+  <footer style="background:#02010c; padding:20px 0; text-align:center; font-family:Arial;">
+    <p style="margin:0; font-size:14px; color:#555;">
+        © 2025 Harshine. All Rights Reserved.
+    </p>
+  </footer>
+
+  <script>
+    (function () {
+       // Smooth scroll to Projects
+       const btn = document.getElementById('view-projects-btn');
+       const projects = document.getElementById('projects');
+       if (btn && projects) {
+         btn.addEventListener('click', function (e) {
+           e.preventDefault();
+           projects.scrollIntoView({ behavior: 'smooth', block: 'start' });
+           history.replaceState(null, '', '#projects');
+         });
+       }
+
+       const cards = document.querySelectorAll('.skill-card');
+       if (cards.length) {
+         const applyFill = (card) => {
+           const fill = card.querySelector('.skill-fill');
+           if (!fill) return;
+           const level = (card.style.getPropertyValue('--level') || '0%').trim();
+           fill.style.width = '0%';
+           requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = level; }));
+         };
+         const io = new IntersectionObserver((entries, obs) => {
+           entries.forEach(e => {
+             if (e.isIntersecting) {
+               applyFill(e.target);
+               obs.unobserve(e.target);
+             }
+           });
+         }, { threshold: 0.25 });
+         cards.forEach(c => io.observe(c));
+         window.addEventListener('load', () => cards.forEach(c => { const rect = c.getBoundingClientRect(); if (rect.top < window.innerHeight) applyFill(c); }));
+       }
+
+       const form = document.getElementById('contact-form');
+       if (form) {
+         form.addEventListener('submit', function (ev) {
+           ev.preventDefault();
+           const name = form.name.value.trim();
+           const email = form.email.value.trim();
+           const message = form.message.value.trim();
+           let ok = true;
+           document.getElementById('name-error').textContent = '';
+           document.getElementById('email-error').textContent = '';
+           document.getElementById('message-error').textContent = '';
+           if (!name) { document.getElementById('name-error').textContent = 'Please enter your name.'; ok = false; }
+           if (!email || !/^\S+@\S+\.\S+$/.test(email)) { document.getElementById('email-error').textContent = 'Please enter a valid email.'; ok = false; }
+           if (!message) { document.getElementById('message-error').textContent = 'Please enter a message.'; ok = false; }
+           if (!ok) return;
+           // TODO: integrate with email backend or service
+           alert('Message validated locally. Configure backend to send it.');
+           form.reset();
+         });
+       }
+
+      // Make project cards show the hover effect when clicked (and allow keyboard activation)
+      const projectCards = document.querySelectorAll('.project-card');
+      if (projectCards.length) {
+        // set role/button for accessibility
+        projectCards.forEach(c => c.setAttribute('role', c.getAttribute('role') || 'button'));
+
+        projectCards.forEach(card => {
+          // click toggles selection; clicking another card makes it selected exclusively
+          card.addEventListener('click', (e) => {
+            // If ctrl/meta clicked or it has a link inside, let default behavior happen
+            if (e.ctrlKey || e.metaKey) return;
+
+            const already = card.classList.contains('clicked');
+            projectCards.forEach(c => {
+              c.classList.remove('clicked');
+              c.setAttribute('aria-pressed', 'false');
+            });
+
+            if (!already) {
+              card.classList.add('clicked');
+              card.setAttribute('aria-pressed', 'true');
+            } else {
+              card.setAttribute('aria-pressed', 'false');
+            }
+          });
+
+          // keyboard support: Enter or Space activates the same behaviour
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+              e.preventDefault();
+              card.click();
+            }
+          });
+
+          
+          card.addEventListener('focus', () => card.classList.add('focus-visible'));
+          card.addEventListener('blur', () => card.classList.remove('focus-visible'));
+        });
+
+       
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.project-card')) projectCards.forEach(c => {
+            c.classList.remove('clicked');
+            c.setAttribute('aria-pressed', 'false');
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
