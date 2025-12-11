@@ -1,3 +1,7 @@
+## 🌐 Project Demo  
+👉 [View My Portfolio Live]https://harshine-s.github.io/portfolio/  
+
+
 🔑 Core Overview
 - Built with vanilla HTML, CSS, JavaScript
 - Showcases skills, projects, and contact options
